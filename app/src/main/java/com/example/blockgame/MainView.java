@@ -115,22 +115,30 @@ public class MainView extends View {
     }
 
     boolean m_IsTouch = false;
-
+    //왼쪽버튼 눌렀을 때
     private void m_Handler_BtnLeft(long p_DelayTime) {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
                 m_Paddle_X -= m_Paddle_W / 20;
+                if(m_Paddle_X <= 0){
+                    m_Paddle_X = 0;
+                    m_IsTouch =false;
+                }
                 if (m_IsTouch) m_Handler_ViewReload(30);
             }
         }, p_DelayTime);
     }
-
+    //오른쪽버튼 눌렀을 때
     private void m_Handler_BtnRight(long p_DelayTime) {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
                 m_Paddle_X += m_Paddle_W / 20;
+                if(m_Paddle_X >= m_ViewWidth - m_Paddle_W){
+                    m_Paddle_X = m_ViewWidth - m_Paddle_W;
+                    m_IsTouch = false;
+                }
                 if (m_IsTouch) m_Handler_ViewReload(30);
             }
         }, p_DelayTime);
