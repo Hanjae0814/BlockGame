@@ -22,6 +22,14 @@ public class MainView extends View {
     int m_Paddle_X, m_Paddle_Y; // 패들의 X,Y좌표
     int m_Paddle_W, m_Paddle_H; // 패들의 넓이, 높이
 
+    Bitmap m_Img_Ball; //공
+    int m_Ball_X, m_Ball_Y; //공의 x,y좌표
+    int m_Ball_D, m_Ball_R; //공의 지름, 반지름
+    int m_Ball_Speed, m_Ball_SpeedX, m_Ball_SpeedY; //공의 속도, 공의 X방향 속도, 공의 Y방향 속도
+
+    boolean m_IsPlay = false; // 게임상태
+
+
     public MainView(Context context) {
         super(context);
     }
@@ -39,7 +47,9 @@ public class MainView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawColor(Color.BLACK);
+        func_BallMove();
 
+        canvas.drawBitmap(m_Img_Ball, m_Ball_X, m_Ball_Y, null);
         canvas.drawBitmap(m_Img_Paddle, m_Paddle_X, m_Paddle_Y, null);
         canvas.drawBitmap(m_Img_btnLeft, m_BtnLeft_X, m_BtnLeft_Y, null);
         canvas.drawBitmap(m_Img_btnRight, m_BtnRight_X, m_BtnRight_Y, null);
@@ -56,14 +66,28 @@ public class MainView extends View {
 
         switch (w_KeyAction) {
             case MotionEvent.ACTION_DOWN:
-                if (m_RectBtn_Left.contains(w_X, w_Y)) {
+                if(m_IsPlay) {
+                    if (m_RectBtn_Left.contains(w_X, w_Y)) {
 
-                    m_IsTouch = true;
-                    m_Handler_BtnLeft(0);
+                        m_IsTouch = true;
+                        m_Handler_BtnLeft(0);
 
-                } else if (m_RectBtn_Right.contains(w_X, w_Y)){
-                    m_IsTouch = true;
-                    m_Handler_BtnRight(0);
+                    } else if (m_RectBtn_Right.contains(w_X, w_Y)) {
+                        m_IsTouch = true;
+                        m_Handler_BtnRight(0);
+                    }
+                }else{
+                    if(m_RectBtn_Left.contains(w_X, w_Y)){
+                        m_IsPlay =true;
+                        m_Ball_SpeedX = -m_Ball_Speed;
+                        m_Ball_SpeedY = -m_Ball_Speed;
+                    }else if(m_RectBtn_Right.contains(w_X, w_Y)){
+                        m_IsPlay = true;
+                        m_Ball_SpeedX = m_Ball_Speed;
+                        m_Ball_SpeedY = -m_Ball_Speed;
+                    }
+
+
         }
                 break;
             case MotionEvent.ACTION_UP:
@@ -98,7 +122,47 @@ public class MainView extends View {
         m_Paddle_Y = m_BtnLeft_Y - m_Paddle_H - m_Paddle_H / 2;
         m_Img_Paddle = Bitmap.createScaledBitmap(m_Img_Paddle, m_Paddle_W, m_Paddle_H, false);
 
+        //볼 초기화
+        m_Img_Ball = BitmapFactory.decodeResource(getResources(), R.drawable.block_ball);
+        m_Ball_D = m_Paddle_H;
+        m_Ball_R = m_Ball_D/2;
+        m_Ball_X = m_ViewWidth /2 - m_Ball_R;
+        m_Ball_Y = m_Paddle_Y - m_Ball_D;
+        m_Img_Ball = Bitmap.createScaledBitmap(m_Img_Ball, m_Ball_D, m_Ball_D, false);
+
+        m_Ball_Speed = m_Ball_R;
+        m_Ball_SpeedX = 0;
+        m_Ball_SpeedY = 0;
+
         m_Handler_ViewReload(30);
+    }
+
+    private void func_Reset(){
+        m_IsPlay = false;
+        m_IsTouch = false;
+
+        m_Ball_SpeedX = 0;
+        m_Ball_SpeedY = 0;
+
+        m_Paddle_X = m_ViewWidth / 2 - m_Paddle_W / 2;
+        m_Paddle_Y = m_BtnLeft_Y - m_Paddle_H - m_Paddle_H / 2;
+        m_Ball_X = m_ViewWidth /2 - m_Ball_R;
+        m_Ball_Y = m_Paddle_Y - m_Ball_D;
+    }
+
+    private void func_BallMove(){
+        if(m_IsPlay){
+            m_Ball_X += m_Ball_SpeedX;
+            m_Ball_Y += m_Ball_SpeedY;
+
+            if(m_Ball_X <= 0 || m_Ball_X >= m_ViewWidth - m_Ball_D){
+                m_Ball_SpeedX *= -1;
+            }
+            if (m_Ball_Y <=0){
+                m_Ball_SpeedY *= -1;
+            }
+            if (m_Ball_Y>= m_ViewHeight) func_Reset();
+        }
     }
 
 
