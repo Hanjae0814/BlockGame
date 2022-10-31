@@ -48,6 +48,7 @@ public class MainView extends View {
         super.onDraw(canvas);
         canvas.drawColor(Color.BLACK);
         func_BallMove();
+        func_PaddleCheck();
 
         canvas.drawBitmap(m_Img_Ball, m_Ball_X, m_Ball_Y, null);
         canvas.drawBitmap(m_Img_Paddle, m_Paddle_X, m_Paddle_Y, null);
@@ -68,7 +69,6 @@ public class MainView extends View {
             case MotionEvent.ACTION_DOWN:
                 if(m_IsPlay) {
                     if (m_RectBtn_Left.contains(w_X, w_Y)) {
-
                         m_IsTouch = true;
                         m_Handler_BtnLeft(0);
 
@@ -165,6 +165,21 @@ public class MainView extends View {
         }
     }
 
+    //패들 충돌 확인
+    private void func_PaddleCheck(){
+        if(m_IsPlay){
+            if(m_Paddle_X - m_Ball_R <= m_Ball_X && m_Ball_X <= m_Paddle_X + m_Paddle_W-m_Ball_R
+            && m_Paddle_Y - m_Ball_D <= m_Ball_Y && m_Ball_Y <= m_Paddle_Y - m_Ball_R){
+                m_Ball_SpeedY *= -1;
+                if(m_Paddle_Y - m_Ball_D < m_Ball_Y) m_Ball_Y = m_Paddle_Y - m_Ball_D - (m_Ball_Y - (m_Paddle_Y - m_Ball_D));
+            } else if (m_Paddle_Y - m_Ball_R <= m_Ball_Y && m_Ball_Y <= m_Paddle_Y + m_Ball_R
+            && m_Paddle_X - m_Ball_D <= m_Ball_X && m_Ball_X <= m_Paddle_X + m_Paddle_W){
+                m_Ball_SpeedX *= -1;
+                m_Ball_X += m_Ball_SpeedX;
+            }
+        }
+    }
+
 
     boolean m_IsEnd = true;
 
@@ -184,7 +199,7 @@ public class MainView extends View {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                m_Paddle_X -= m_Paddle_W / 20;
+                m_Paddle_X -= m_Paddle_W / 8;
                 if(m_Paddle_X <= 0){
                     m_Paddle_X = 0;
                     m_IsTouch =false;
@@ -198,7 +213,7 @@ public class MainView extends View {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                m_Paddle_X += m_Paddle_W / 20;
+                m_Paddle_X += m_Paddle_W / 8;
                 if(m_Paddle_X >= m_ViewWidth - m_Paddle_W){
                     m_Paddle_X = m_ViewWidth - m_Paddle_W;
                     m_IsTouch = false;
