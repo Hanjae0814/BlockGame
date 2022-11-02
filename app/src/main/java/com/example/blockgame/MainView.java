@@ -11,6 +11,8 @@ import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+
 public class MainView extends View {
     int m_ViewWidth, m_ViewHeight; // 화면의 넓이와 높이
     Bitmap m_Img_btnLeft, m_Img_btnRight;
@@ -26,6 +28,9 @@ public class MainView extends View {
     int m_Ball_X, m_Ball_Y; //공의 x,y좌표
     int m_Ball_D, m_Ball_R; //공의 지름, 반지름
     int m_Ball_Speed, m_Ball_SpeedX, m_Ball_SpeedY; //공의 속도, 공의 X방향 속도, 공의 Y방향 속도
+
+    Bitmap m_Img_Block; // 블럭 이미지
+    ArrayList<Block> m_Arr_BlockList = new ArrayList<Block>();
 
     boolean m_IsPlay = false; // 게임상태
 
@@ -54,6 +59,11 @@ public class MainView extends View {
         canvas.drawBitmap(m_Img_Paddle, m_Paddle_X, m_Paddle_Y, null);
         canvas.drawBitmap(m_Img_btnLeft, m_BtnLeft_X, m_BtnLeft_Y, null);
         canvas.drawBitmap(m_Img_btnRight, m_BtnRight_X, m_BtnRight_Y, null);
+        //블럭
+        for (int i =0; i< m_Arr_BlockList.size(); i++){
+            Block w_Block = m_Arr_BlockList.get(i);
+            canvas.drawBitmap(m_Img_Block, w_Block.Block_X, w_Block.Block_Y,null);
+        }
 
 
     }
@@ -134,6 +144,9 @@ public class MainView extends View {
         m_Ball_SpeedX = 0;
         m_Ball_SpeedY = 0;
 
+        //블럭 생성
+        func_MakeBlock();
+
         m_Handler_ViewReload(30);
     }
 
@@ -150,6 +163,28 @@ public class MainView extends View {
         m_Ball_Y = m_Paddle_Y - m_Ball_D;
     }
 
+    //블럭 만들기
+    private void func_MakeBlock(){
+        int w_Block_W = m_ViewWidth/7;
+        int w_Block_H = w_Block_W/3;
+
+        m_Img_Block = BitmapFactory.decodeResource(getResources(), R.drawable.block_block01);
+        m_Img_Block = Bitmap.createScaledBitmap(m_Img_Block, w_Block_W, w_Block_H, false);
+
+        m_Arr_BlockList.clear();
+        for(int i=0; i < 3; i++){
+            int w_Block_Y = w_Block_H*2 + w_Block_H*i;
+            for(int j=0; j < 7; j++){
+                int w_Block_X = w_Block_W *j;
+
+                Block w_Block = new Block(w_Block_W, w_Block_H, w_Block_X, w_Block_Y);
+                m_Arr_BlockList.add(w_Block);
+
+            }
+        }
+    }
+
+    // 공의 움직임 처리
     private void func_BallMove(){
         if(m_IsPlay){
             m_Ball_X += m_Ball_SpeedX;
