@@ -54,13 +54,17 @@ public class MainView extends View {
         canvas.drawColor(Color.BLACK);
         func_BallMove();
         func_PaddleCheck();
+        func_BlockCheck();
 
         canvas.drawBitmap(m_Img_Ball, m_Ball_X, m_Ball_Y, null);
         canvas.drawBitmap(m_Img_Paddle, m_Paddle_X, m_Paddle_Y, null);
         canvas.drawBitmap(m_Img_btnLeft, m_BtnLeft_X, m_BtnLeft_Y, null);
         canvas.drawBitmap(m_Img_btnRight, m_BtnRight_X, m_BtnRight_Y, null);
         //블럭
-
+        /*for (int i =0; i< m_Arr_BlockList.size(); i < size; i++){
+            Block w_Block = m_Arr_BlockList.get(i);
+            canvas.drawBitmap(m_Img_Block, w_Block.Block_X, w_Block.Block_Y,null);
+        }*/
         for (Block w_Block : m_Arr_BlockList){
             canvas.drawBitmap(m_Img_Block, w_Block.Block_X, w_Block.Block_Y,null);
         }
@@ -211,6 +215,28 @@ public class MainView extends View {
                 m_Ball_SpeedX *= -1;
                 m_Ball_X += m_Ball_SpeedX;
             }
+        }
+    }
+
+    //블럭 충돌 확인
+    private void func_BlockCheck(){
+        for (Block w_Block : m_Arr_BlockList){
+            int w_BlockCheck = w_Block.IsClash(m_Ball_X, m_Ball_Y, m_Ball_D,m_Ball_R);
+
+            switch (w_BlockCheck){
+                case 0:
+                    continue;
+                case 1:
+                case 2:
+                    m_Ball_SpeedX *=-1;
+                    break;
+                case 3:
+                case 4:
+                    m_Ball_SpeedY *=-1;
+                    break;
+            }
+            m_Arr_BlockList.remove(w_Block);
+            break;
         }
     }
 
