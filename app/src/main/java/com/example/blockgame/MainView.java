@@ -60,11 +60,7 @@ public class MainView extends View {
         canvas.drawBitmap(m_Img_Paddle, m_Paddle_X, m_Paddle_Y, null);
         canvas.drawBitmap(m_Img_btnLeft, m_BtnLeft_X, m_BtnLeft_Y, null);
         canvas.drawBitmap(m_Img_btnRight, m_BtnRight_X, m_BtnRight_Y, null);
-        //블럭
-        /*for (int i =0; i< m_Arr_BlockList.size(); i < size; i++){
-            Block w_Block = m_Arr_BlockList.get(i);
-            canvas.drawBitmap(m_Img_Block, w_Block.Block_X, w_Block.Block_Y,null);
-        }*/
+
         for (Block w_Block : m_Arr_BlockList){
             canvas.drawBitmap(m_Img_Block, w_Block.Block_X, w_Block.Block_Y,null);
         }
