@@ -60,7 +60,11 @@ public class MainView extends View {
         canvas.drawBitmap(m_Img_Paddle, m_Paddle_X, m_Paddle_Y, null);
         canvas.drawBitmap(m_Img_btnLeft, m_BtnLeft_X, m_BtnLeft_Y, null);
         canvas.drawBitmap(m_Img_btnRight, m_BtnRight_X, m_BtnRight_Y, null);
-
+        //블럭
+        /*for (int i =0; i< m_Arr_BlockList.size(); i < size; i++){
+            Block w_Block = m_Arr_BlockList.get(i);
+            canvas.drawBitmap(m_Img_Block, w_Block.Block_X, w_Block.Block_Y,null);
+        }*/
         for (Block w_Block : m_Arr_BlockList){
             canvas.drawBitmap(m_Img_Block, w_Block.Block_X, w_Block.Block_Y,null);
         }
@@ -131,6 +135,7 @@ public class MainView extends View {
         m_Paddle_Y = m_BtnLeft_Y - m_Paddle_H - m_Paddle_H / 2;
         m_Img_Paddle = Bitmap.createScaledBitmap(m_Img_Paddle, m_Paddle_W, m_Paddle_H, false);
 
+
         //볼 초기화
         m_Img_Ball = BitmapFactory.decodeResource(getResources(), R.drawable.block_ball);
         m_Ball_D = m_Paddle_H;
@@ -139,7 +144,7 @@ public class MainView extends View {
         m_Ball_Y = m_Paddle_Y - m_Ball_D;
         m_Img_Ball = Bitmap.createScaledBitmap(m_Img_Ball, m_Ball_D, m_Ball_D, false);
 
-        m_Ball_Speed = m_Ball_R;
+        m_Ball_Speed = 10;
         m_Ball_SpeedX = 0;
         m_Ball_SpeedY = 0;
 
@@ -244,7 +249,7 @@ public class MainView extends View {
             @Override
             public void run() {
                 invalidate();
-                if (m_IsEnd) m_Handler_ViewReload(30);
+                if (m_IsEnd) m_Handler_ViewReload(10);
             }
         }, p_DelayTime);
     }
@@ -255,12 +260,12 @@ public class MainView extends View {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                m_Paddle_X -= m_Paddle_W / 8;
+                m_Paddle_X -= m_Paddle_W / 3;
                 if(m_Paddle_X <= 0){
                     m_Paddle_X = 0;
                     m_IsTouch =false;
                 }
-                if (m_IsTouch) m_Handler_ViewReload(30);
+                if (m_IsTouch) m_Handler_ViewReload(10);
             }
         }, p_DelayTime);
     }
@@ -269,12 +274,12 @@ public class MainView extends View {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                m_Paddle_X += m_Paddle_W / 8;
+                m_Paddle_X += m_Paddle_W / 3;
                 if(m_Paddle_X >= m_ViewWidth - m_Paddle_W){
                     m_Paddle_X = m_ViewWidth - m_Paddle_W;
                     m_IsTouch = false;
                 }
-                if (m_IsTouch) m_Handler_ViewReload(30);
+                if (m_IsTouch) m_Handler_ViewReload(10);
             }
         }, p_DelayTime);
     }

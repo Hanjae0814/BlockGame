@@ -30,7 +30,7 @@ public class Block {
             return 3;
         }
         // 블럭 하측 충돌 확인
-        if (Block_Y-Block_H >= Ball_Y && Ball_Y >= Block_H-Ball_R
+        if (Block_Y+Block_H >= Ball_Y && Ball_Y >= Block_H-Ball_R
                 && Block_X-Ball_R <= Ball_X && Ball_X <= Block_X+Block_W-Ball_R){
             return 4;
         }
